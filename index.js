@@ -3,10 +3,10 @@ const os = require("os");
 
 class NetworkProbe {
   /**
-   * @param {function} callback - A callback function to be called after the network interface is detected
+   * @param {function} callback - A callback function to be called after the network interface is detected, it is triggered by the autoDetect method
    * @param {number} port - A port number to check if the network interface is live
    * @param {function} fallback - A callback function to be called if the network interface is not live
-   * @param {boolean} v - A boolean to enable verbose logging
+   * @param {boolean} verbose - A boolean to enable verbose logging
    * @returns {object} - Returns the network prober object
    * @description - A class to auto detect the network interface and check if it is live
    * @example
@@ -16,8 +16,8 @@ class NetworkProbe {
    * console.log(netFace)
    * // Output: { address: '', netmask: '', family: 'IPv4', mac: '', internal: false }
    */
-  constructor(port, callback = () => {}, v = false, fallback) {
-    this.verbose = v;
+  constructor(port, callback = () => {}, verbose = false, fallback) {
+    this.verbose = verbose;
     this.port = port;
     this.networkInterfaces = os.networkInterfaces();
     this.interfaceNames = Object.keys(this.networkInterfaces);
@@ -109,7 +109,8 @@ class NetworkProbe {
       );
       faceNames = this.interfaceNames.filter((face) => !face.includes(eth));
       this.netface = theNetwork;
-      return theNetwork;
+      this.callback(this.netface);
+      return theNetwork
     }
 
     // No ETH use other Network Preference
@@ -129,6 +130,7 @@ class NetworkProbe {
         );
       const lo = this.getLocalNetwork();
       this.netface = lo;
+      this.callback(this.netface);
       return lo;
     }
 
@@ -144,6 +146,7 @@ class NetworkProbe {
         `NetProbe: Found a wireless IPv4 network... Using ${othernetFace.address} from interface ${othernetFace.netface} as the preferred network`
       );
     this.netface = othernetFace;
+    this.callback(this.netface);
     return othernetFace;
   }
 

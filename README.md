@@ -16,10 +16,10 @@ NetProbe is a Node.js tool designed to provide server applications with the most
 
 ## Installation
 
-Install the required dependency:
+To install netprobe, run:
 
 ```bash
-npm install axios
+npm install netprobe
 ```
 
 ---
@@ -27,11 +27,11 @@ npm install axios
 ## Usage
 
 ```javascript
-const NetworkProbe = require('./index.js');
+const NetworkProbe = require('netprobe');
 
 const netProb = new NetworkProbe(
   3000,                // Port to check (default: 3000)
-  () => console.log('Network detected!'), // Callback on detection
+  () => console.log('Face Detected!'), // Callback on detection
   true,                // Verbose logging
   () => console.log('Network offline!')   // Fallback callback
 );
@@ -75,7 +75,7 @@ Checks if the detected network interface is live by sending an HTTP HEAD request
 - **cb**: `(err, live)` - Callback called with error or `live=true`
 - **verbose**: Enable verbose logging for this check (optional)
 
-### `initLiveCheck(span = 5000)`
+### `initLiveCheck(5000)`
 
 Starts periodic liveness checks (default every 5 seconds).  
 Optionally accepts a custom interval in milliseconds.  
@@ -111,9 +111,6 @@ netProb.useSafePort().then((safePort) => {
 ---
 
 ## Notes
-
-- Requires Node.js and the `axios` package.
-- Designed for Linux/Unix systems (uses `os.networkInterfaces()`).
 - Prefers wired interfaces (`enp*`, `eth*`, etc.) over wireless or loopback.
 
 ---
