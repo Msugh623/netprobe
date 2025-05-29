@@ -1,0 +1,24 @@
+{
+  "name": "netprobe",
+  "version": "1.0.0",
+  "description": "Network interface discovery tool",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/msugh623/netprobe.git"
+  },
+  "keywords": [
+    "netprobe",
+    "network",
+    "discover"
+  ],
+  "author": "msugh623",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/msugh623/netprobe/issues"
+  },
+  "homepage": "https://github.com/msugh623/netprobe#readme"
+}
