@@ -1,4 +1,4 @@
-# NetworkProbe
+# NetProbe
 
 NetProbe is a Node.js tool designed to provide server applications with the most suitable network interface for connectivity, along with utilities to monitor its liveness.
 
