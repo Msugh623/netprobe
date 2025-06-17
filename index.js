@@ -31,9 +31,9 @@ class NetworkProbe {
   prefer = (face = "end") => {
     if (typeof face == "string") {
       this.preference = face;
-      return
+      return;
     }
-    throw new TypeError('face parameter must be a string ')
+    throw new TypeError("face parameter must be a string ");
   };
 
   initLiveCheck = () => {
@@ -95,11 +95,41 @@ class NetworkProbe {
           this.interfaceNames.length
         } network interfaces: ${this.interfaceNames.join(", ")}`
       );
-this.preference !== 'enp' && this.verbose && console.log("Netprobe: Attempting to prefer "+this.preference+" as supplied if it exists")
+
+    // Preferred Network Interface
+    if (this.preference !== "enp") {
+      this.verbose &&
+        console.log(
+          "Netprobe: Attempting to prefer " +
+            this.preference +
+            " as supplied if it exists"
+        );
+
+      const pref = this.interfaceNames.find((face) =>
+        face.startsWith(this.preference)
+      );
+      if (pref) {
+        this.verbose &&
+          console.log(
+            `NetProbe: Found preferred network interface ${pref}... Using ${this.preference} as network interface`
+          );
+        const theface = this.networkInterfaces[pref];
+        const theNetwork = theface.find((network) =>
+          this.isIpAddr(network.address)
+        );
+        this.netface = theNetwork;
+        return theNetwork;
+      } else {
+        this.verbose &&
+          console.log(
+            `NetProbe: Preferred network interface ${this.preference} not found... Falling back to auto-detection`
+          );
+      }
+    }
+
     // Wired Network Preference
     const eth =
-      faceNames.find((face) =>
-face.startsWith(this.preference||'enp')) ||
+      faceNames.find((face) => face.startsWith(this.preference || "enp")) ||
       faceNames.find((face) => face.startsWith("eth")) ||
       faceNames.find((face) => face.startsWith("ETH")) ||
       faceNames.find((face) => face.startsWith("Ethernet")) ||
@@ -152,6 +182,34 @@ face.startsWith(this.preference||'enp')) ||
       );
     this.netface = othernetFace;
     return othernetFace;
+  }
+
+  chport(port) {
+    return port + 1;
+  }
+
+  async useSafePort(port = Number(this.port)) {
+    /**
+     * @param {number} port - The port number to begin port test with
+     * 
+     * Use the autoDetect method before using the safePort Method
+     * Automatically sets this.port as it tests
+    */
+    if (!this.netface.address) {
+      throw new Error('Invalid netface. Use the autoDetect method to get netface')
+    }
+    const url = "http://" + this.netface.address + ":" + port;
+    try {
+      const _ = await fetch(url, { method: "HEAD" });
+      this.verbose &&
+        console.log(
+          `EADDRINUSE: failed to use port ${port} as address is already in use... attempting change port`
+        );
+      return this.useSafePort(this.chport(port));
+    } catch (err) {
+      this.port = port;
+      return port
+    }
   }
 
   async liveCheck(
