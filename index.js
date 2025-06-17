@@ -95,10 +95,11 @@ class NetworkProbe {
           this.interfaceNames.length
         } network interfaces: ${this.interfaceNames.join(", ")}`
       );
-
+this.preference !== 'enp' && this.verbose && console.log("Netprobe: Attempting to prefer "+this.preference+" as supplied if it exists")
     // Wired Network Preference
     const eth =
-      faceNames.find((face) => face.startsWith("enp")) ||
+      faceNames.find((face) =>
+face.startsWith(this.preference||'enp')) ||
       faceNames.find((face) => face.startsWith("eth")) ||
       faceNames.find((face) => face.startsWith("ETH")) ||
       faceNames.find((face) => face.startsWith("Ethernet")) ||
