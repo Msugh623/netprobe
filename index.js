@@ -120,6 +120,16 @@ class NetworkProbe {
         this.netface = theNetwork;
         return theNetwork;
       } else {
+        if (this.preference == "localhost") {
+          const theNetwork = this.getLocalNetwork();
+          theNetwork.address = "localhost";
+          this.verbose &&
+            console.log(
+              `NetProbe: Preferred Localhost as supplied`
+            );
+          this.netface = theNetwork;
+          return theNetwork
+        }
         this.verbose &&
           console.log(
             `NetProbe: Preferred network interface ${this.preference} not found... Falling back to auto-detection`
@@ -191,12 +201,14 @@ class NetworkProbe {
   async useSafePort(port = Number(this.port)) {
     /**
      * @param {number} port - The port number to begin port test with
-     * 
+     *
      * Use the autoDetect method before using the safePort Method
      * Automatically sets this.port as it tests
-    */
+     */
     if (!this.netface.address) {
-      throw new Error('Invalid netface. Use the autoDetect method to get netface')
+      throw new Error(
+        "Invalid netface. Use the autoDetect method to get netface"
+      );
     }
     const url = "http://" + this.netface.address + ":" + port;
     try {
@@ -208,7 +220,7 @@ class NetworkProbe {
       return this.useSafePort(this.chport(port));
     } catch (err) {
       this.port = port;
-      return port
+      return port;
     }
   }
 
