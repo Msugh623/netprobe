@@ -120,15 +120,14 @@ class NetworkProbe {
         this.netface = theNetwork;
         return theNetwork;
       } else {
-        if (this.preference == "localhost") {
+        if (this.preference == "localhost" || this.preference == "base") {
           const theNetwork = this.getLocalNetwork();
-          theNetwork.address = "localhost";
+          theNetwork.address =
+            this.preference == "localhost" ? "localhost" : "0.0.0.0";
           this.verbose &&
-            console.log(
-              `NetProbe: Preferred Localhost as supplied`
-            );
+            console.log(`NetProbe: Preferred Localhost as supplied`);
           this.netface = theNetwork;
-          return theNetwork
+          return theNetwork;
         }
         this.verbose &&
           console.log(

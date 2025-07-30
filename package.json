@@ -1,6 +1,6 @@
 {
   "name": "netprobe",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Network interface discovery tool",
   "main": "index.js",
   "scripts": {
