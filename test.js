@@ -1,7 +1,7 @@
 const NetworkProbe = require(".");
 
 const netProb = new NetworkProbe();
-netProb.prefer('localhost')
+netProb.prefer('base')
 netProb.verbose = true;
 netProb.port = 3000;
 
