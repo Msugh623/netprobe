@@ -28,12 +28,11 @@ class NetworkProbe {
     this.preference = "enp";
   }
 
-  prefer = (face = "end") => {
-    if (typeof face == "string") {
+  prefer = (face = "") => {
+    if (typeof face == "string" && face) {
       this.preference = face;
-      return;
+      throw new TypeError("Face parameter must be a string ");
     }
-    throw new TypeError("face parameter must be a string ");
   };
 
   initLiveCheck = () => {
