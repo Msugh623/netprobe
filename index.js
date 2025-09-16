@@ -26,6 +26,7 @@ class NetworkProbe {
     this.fallback = fallback || (() => {});
     this.heartbeat = true;
     this.preference = "enp";
+    this.retryWindow=5000
   }
 
   prefer = (face = "eth") => {
@@ -39,19 +40,30 @@ class NetworkProbe {
   initLiveCheck = () => {
     this.stopLiveCheck();
     const port = this.port;
+    let count = 0;
     this.liveInterval = setInterval(() => {
       this.liveCheck(port, (err, live) => {
         if (err) {
+          count++;
+          if (count > 3) {
+            count == 4 &&
+              this.verbose &&
+              console.log(
+                "NetProbe: Network is offline... NetProbe has given up and will retry silently"
+              );
+            return;
+          }
           this.heartbeat = false;
           this.fallback();
           this.verbose && console.error(err);
           this.verbose &&
             console.log(
-              `NetProbe: Network is offline... No fallback supplied. Retrying heartbeat in 5 seconds\n`
+              `NetProbe: Network is offline... (${count} attempts) No fallback supplied. Retrying heartbeat in ${this.retryWindow/1000} seconds\n`
             );
         }
         if (live) {
           if (!this.heartbeat) {
+            count = 0;
             this.verbose &&
               console.log(
                 `\nNetProbe: Network is back online @ http://${this.netface.address}:${port}`
@@ -60,7 +72,7 @@ class NetworkProbe {
           }
         }
       });
-    }, 5000);
+    }, this.retryWindow);
   };
 
   stopLiveCheck = () => {
