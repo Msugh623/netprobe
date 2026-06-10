@@ -88,16 +88,16 @@ new NetworkProbe(
 
 Runtime-configurable properties
 
-- `netProb.heartbeat` (boolean, default: `true`) — tracks whether heartbeat is considered healthy.
-- `netProb.preference` (string, default: `enp`) — preferred interface name prefix (e.g., `enp`, `eth`, `wlan`, or special values `localhost` / `base`).
-- `netProb.retryWindow` (number, default: `5000`) — interval (ms) between heartbeat retries when `initLiveCheck()` is running. Change this before calling `initLiveCheck()` to use a custom interval.
+- `netProb.heartbeat` (boolean, default: `true`) - tracks whether heartbeat is considered healthy.
+- `netProb.preference` (string, default: `enp`) - preferred interface name prefix (e.g., `enp`, `eth`, `wlan`, or special values `localhost` / `base`).
+- `netProb.retryWindow` (number, default: `5000`) - interval (ms) between heartbeat retries when `initLiveCheck()` is running. Change this before calling `initLiveCheck()` to use a custom interval.
 
 Use the `prefer(face)` helper to set `preference` safely at runtime: `netProb.prefer('eth')`.
 
 Special preference values
 
-- `localhost` — forces loopback with address `localhost`.
-- `base` — forces loopback with address `0.0.0.0`.
+- `localhost` - forces loopback with address `localhost`.
+- `base` - forces loopback with address `0.0.0.0`.
 
 ---
 
@@ -107,7 +107,7 @@ Special preference values
 
 Selects the best available interface and returns an object with: `address`, `netmask`, `family`, `mac`, `internal`, `cidr`, `interfaceName`.
 
-Example return: `{ address: '192.168.1.10', netmask: '255.255.255.0', family: 'IPv4', mac: 'aa:bb:cc:dd:ee:ff', internal: false, cidr: '192.168.1.0/24', interfaceName: 'enp3s0' }`
+Example return: `{ address: '192.168.1.10', netmask: '255.255.255.0', family: 'IPv4', mac: 'aa:bb:cc:dd:ee:ff', internal: false, cidr: '192.168.1.0/24', interfaceName: 'wlan0' }`
 
 ### `prefer(face)`
 
@@ -174,29 +174,29 @@ np.initLiveCheck();
 ## Notes & Compatibility
 
 - Prefers wired interfaces by default (`enp*`, `eth*`). If none found, falls back to wireless or loopback.
-- `useSafePort` uses `fetch` internally — ensure your Node.js runtime supports `fetch` (Node 18+), or polyfill if required.
+- `useSafePort` uses `fetch` internally - ensure your Node.js runtime supports `fetch` (Node 18+), or polyfill if required.
 
 ---
 
 **Configuration Reference**
 
-- **port**: number — default: `3000`. Port used for liveness checks and accessible as `netProb.port`.
-- **callback**: function — default: `() => {}`. Invoked after an interface is detected.
-- **verbose**: boolean — default: `false`. When true, enables detailed console logging.
-- **fallback**: function — default: `() => {}`. Called when a heartbeat liveness check fails.
-- **heartbeat**: boolean — default: `true`. Internal flag indicating whether the probe considers the network healthy.
-- **preference**: string — default: `'enp'`. Preferred interface name prefix (e.g., `enp`, `eth`, `wlan`). Special values: `localhost` (use `localhost`), `base` (use `0.0.0.0`).
-- **retryWindow**: number — default: `5000` (ms). Interval between heartbeat retries used by `initLiveCheck()`.
+- **port**: number - default: `3000`. Port used for liveness checks and accessible as `netProb.port`.
+- **callback**: function - default: `() => {}`. Invoked after an interface is detected.
+- **verbose**: boolean - default: `false`. When true, enables detailed console logging.
+- **fallback**: function - default: `() => {}`. Called when a heartbeat liveness check fails.
+- **heartbeat**: boolean - default: `true`. Internal flag indicating whether the probe considers the network healthy.
+- **preference**: string - default: `'enp'`. Preferred interface name prefix (e.g., `enp`, `eth`, `wlan`). Special values: `localhost` (use `localhost`), `base` (use `0.0.0.0`).
+- **retryWindow**: number - default: `5000` (ms). Interval between heartbeat retries used by `initLiveCheck()`.
 
 Netface object (returned by `autoDetect()`)
 
-- **address**: string — IPv4 address or hostname used for checks (e.g., `192.168.1.10` or `localhost`).
-- **netmask**: string — Network mask (e.g., `255.255.255.0`).
-- **family**: string — IP family (e.g., `IPv4`).
-- **mac**: string — MAC address of the interface.
-- **internal**: boolean — `true` for loopback/internal interfaces.
-- **cidr**: string — CIDR notation if available (e.g., `192.168.1.0/24`).
-- **interfaceName**: string — OS interface name (e.g., `enp3s0`) or `Internal/Native_Loopback`.
+- **address**: string - IPv4 address or hostname used for checks (e.g., `192.168.1.10` or `localhost`).
+- **netmask**: string - Network mask (e.g., `255.255.255.0`).
+- **family**: string - IP family (e.g., `IPv4`).
+- **mac**: string - MAC address of the interface.
+- **internal**: boolean - `true` for loopback/internal interfaces.
+- **cidr**: string - CIDR notation if available (e.g., `192.168.1.0/24`).
+- **interfaceName**: string - OS interface name (e.g., `wlan0`) or `Internal/Native_Loopback`.
 
 Tip: Adjust `netProb.retryWindow` before calling `initLiveCheck()` to customize heartbeat frequency.
 
@@ -204,5 +204,5 @@ Tip: Adjust `netProb.retryWindow` before calling `initLiveCheck()` to customize 
 
 ## License
 
-GNU General Public License v2.0 — see the [LICENSE](./LICENSE) file.
+GNU General Public License v2.0 - see the [LICENSE](./LICENSE) file.
 ````
