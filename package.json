@@ -1,7 +1,7 @@
 {
   "name": "netprobe",
-  "version": "2.0.0",
-  "description": "Network interface discovery tool",
+  "version": "2.0.1",
+  "description": "Network interface discovery, connectivity monitoring, and heartbeat utility",
   "main": "index.js",
   "scripts": {
     "test": "node index.js"
@@ -12,8 +12,25 @@
   },
   "keywords": [
     "netprobe",
+    "sprintet",
     "network",
-    "discover"
+    "interface",
+    "network interface",
+    "network probe",
+    "network-interface",
+    "network-interfaces",
+    "interface-discovery",
+    "network-discovery",
+    "interface-detection",
+    "connectivity-check",
+    "network-monitor",
+    "live-network",
+    "network-probe",
+    "ip-discovery",
+    "interface-monitoring",
+    "connection-health",
+    "lan-discovery",
+    "local-network"
   ],
   "author": "msugh623",
   "license": "GPL-2.0-only",

@@ -139,7 +139,7 @@ class NetworkProbe {
         );
         theNetwork.interfaceName = pref;
         this.netface = theNetwork;
-        return theNetwork;
+        return { ...this.netface };
       } else {
         if (this.preference == "localhost" || this.preference == "base") {
           const theNetwork = this.getLocalNetwork();
@@ -149,7 +149,7 @@ class NetworkProbe {
             console.log(`NetProbe: Preferred Localhost as supplied`);
           theNetwork.interfaceName = "Internal/Native_Loopback";
           this.netface = theNetwork;
-          return theNetwork;
+          return { ...this.netface };
         }
         this.verbose &&
           console.log(
@@ -178,7 +178,7 @@ class NetworkProbe {
       faceNames = this.interfaceNames.filter((face) => !face.includes(eth));
       theNetwork.interfaceName = eth;
       this.netface = theNetwork;
-      return theNetwork;
+      return { ...this.netface };
     }
 
     // No ETH use other Network Preference
@@ -199,7 +199,7 @@ class NetworkProbe {
       const lo = this.getLocalNetwork();
       lo.interfaceName = "Internal/Native_Loopback";
       this.netface = lo;
-      return lo;
+      return { ...this.netface };
     }
 
     this.verbose &&
@@ -214,7 +214,7 @@ class NetworkProbe {
         `NetProbe: Found a wireless IPv4 network... Using ${othernetFace.address} from interface ${othernetFace.netface} as the preferred network`,
       );
     this.netface = othernetFace;
-    return othernetFace;
+    return { ...this.netface };
   }
 
   chport(port) {
