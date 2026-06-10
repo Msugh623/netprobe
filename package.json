@@ -1,6 +1,6 @@
 {
   "name": "netprobe",
-  "version": "2.0.1",
+  "version": "2.1.1",
   "description": "Network interface discovery, connectivity monitoring, and heartbeat utility",
   "main": "index.js",
   "scripts": {
