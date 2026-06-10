@@ -21,12 +21,20 @@ class NetworkProbe {
     this.port = port;
     this.networkInterfaces = os.networkInterfaces();
     this.interfaceNames = Object.keys(this.networkInterfaces);
-    this.netface = {};
+    this.netface = {
+      address: "127.0.0.1",
+      netmask: "",
+      family: "IPv4",
+      mac: "",
+      internal: false,
+      cidr: "",
+      interfaceName: "Internal/Native_Loopback",
+    };
     this.callback = callback || (() => {});
     this.fallback = fallback || (() => {});
     this.heartbeat = true;
     this.preference = "enp";
-    this.retryWindow=5000
+    this.retryWindow = 5000;
   }
 
   prefer = (face = "eth") => {
@@ -49,7 +57,7 @@ class NetworkProbe {
             count == 4 &&
               this.verbose &&
               console.log(
-                "NetProbe: Network is offline... NetProbe has given up and will retry silently"
+                "NetProbe: Network is offline... NetProbe has given up and will retry silently",
               );
             return;
           }
@@ -58,7 +66,7 @@ class NetworkProbe {
           this.verbose && console.error(err);
           this.verbose &&
             console.log(
-              `NetProbe: Network is offline... (${count} attempts) No fallback supplied. Retrying heartbeat in ${this.retryWindow/1000} seconds\n`
+              `NetProbe: Network is offline... (${count} attempts) No fallback supplied. Retrying heartbeat in ${this.retryWindow / 1000} seconds\n`,
             );
         }
         if (live) {
@@ -66,7 +74,7 @@ class NetworkProbe {
             count = 0;
             this.verbose &&
               console.log(
-                `\nNetProbe: Network is back online @ http://${this.netface.address}:${port}`
+                `\nNetProbe: Network is back online @ http://${this.netface.address}:${port}`,
               );
             this.heartbeat = true;
           }
@@ -95,7 +103,7 @@ class NetworkProbe {
 
   getLocalNetwork() {
     return (this.networkInterfaces["lo"] || []).find((network) =>
-      this.isIpAddr(network.address)
+      this.isIpAddr(network.address),
     );
   }
 
@@ -105,7 +113,7 @@ class NetworkProbe {
       console.log(
         `NetProbe: Found ${
           this.interfaceNames.length
-        } network interfaces: ${this.interfaceNames.join(", ")}`
+        } network interfaces: ${this.interfaceNames.join(", ")}`,
       );
 
     // Preferred Network Interface
@@ -114,21 +122,22 @@ class NetworkProbe {
         console.log(
           "Netprobe: Attempting to prefer " +
             this.preference +
-            " as supplied if it exists"
+            " as supplied if it exists",
         );
 
       const pref = this.interfaceNames.find((face) =>
-        face.startsWith(this.preference)
+        face.startsWith(this.preference),
       );
       if (pref) {
         this.verbose &&
           console.log(
-            `NetProbe: Found preferred network interface ${pref}... Using ${this.preference} as network interface`
+            `NetProbe: Found preferred network interface ${pref}... Using ${this.preference} as network interface`,
           );
         const theface = this.networkInterfaces[pref];
         const theNetwork = theface.find((network) =>
-          this.isIpAddr(network.address)
+          this.isIpAddr(network.address),
         );
+        theNetwork.interfaceName = pref;
         this.netface = theNetwork;
         return theNetwork;
       } else {
@@ -138,12 +147,13 @@ class NetworkProbe {
             this.preference == "localhost" ? "localhost" : "0.0.0.0";
           this.verbose &&
             console.log(`NetProbe: Preferred Localhost as supplied`);
+          theNetwork.interfaceName = "Internal/Native_Loopback";
           this.netface = theNetwork;
           return theNetwork;
         }
         this.verbose &&
           console.log(
-            `NetProbe: Preferred network interface ${this.preference} not found... Falling back to auto-detection`
+            `NetProbe: Preferred network interface ${this.preference} not found... Falling back to auto-detection`,
           );
       }
     }
@@ -159,13 +169,14 @@ class NetworkProbe {
     if (eth) {
       this.verbose &&
         console.log(
-          `NetProbe: Found what seems to be a wired network... Using ${eth} as the preferred network interface`
+          `NetProbe: Found what seems to be a wired network... Using ${eth} as the preferred network interface`,
         );
       const theface = this.networkInterfaces[eth];
       const theNetwork = theface.find((network) =>
-        this.isIpAddr(network.address)
+        this.isIpAddr(network.address),
       );
       faceNames = this.interfaceNames.filter((face) => !face.includes(eth));
+      theNetwork.interfaceName = eth;
       this.netface = theNetwork;
       return theNetwork;
     }
@@ -176,30 +187,31 @@ class NetworkProbe {
         (face) =>
           this.networkInterfaces[face].map((net) => ({
             ...net,
-            netface: face,
-          })) || []
+            interfaceName: face,
+          })) || [],
       )
       .flat();
     if (faces.length === 0) {
       this.verbose &&
         console.log(
-          `NetProbe: No external network interfaces found... Falling back to native loopback interface`
+          `NetProbe: No external network interfaces found... Falling back to native loopback interface`,
         );
       const lo = this.getLocalNetwork();
+      lo.interfaceName = "Internal/Native_Loopback";
       this.netface = lo;
       return lo;
     }
 
     this.verbose &&
       console.log(
-        `NetProbe: Couldn't find a wired network... Using a wireless network interface`
+        `NetProbe: Couldn't find a wired network... Using a wireless network interface`,
       );
     const othernetFace = faces.find((network) =>
-      this.isIpAddr(network.address)
+      this.isIpAddr(network.address),
     );
     this.verbose &&
       console.log(
-        `NetProbe: Found a wireless IPv4 network... Using ${othernetFace.address} from interface ${othernetFace.netface} as the preferred network`
+        `NetProbe: Found a wireless IPv4 network... Using ${othernetFace.address} from interface ${othernetFace.netface} as the preferred network`,
       );
     this.netface = othernetFace;
     return othernetFace;
@@ -218,7 +230,7 @@ class NetworkProbe {
      */
     if (!this.netface.address) {
       throw new Error(
-        "Invalid netface. Use the autoDetect method to get netface"
+        "Invalid netface. Use the autoDetect method to get netface",
       );
     }
     const url = "http://" + this.netface.address + ":" + port;
@@ -226,7 +238,7 @@ class NetworkProbe {
       const _ = await fetch(url, { method: "HEAD" });
       this.verbose &&
         console.log(
-          `EADDRINUSE: failed to use port ${port} as address is already in use... attempting change port`
+          `EADDRINUSE: failed to use port ${port} as address is already in use... attempting change port`,
         );
       return this.useSafePort(this.chport(port));
     } catch (err) {
@@ -241,7 +253,7 @@ class NetworkProbe {
       err;
       live;
     },
-    verbose = false
+    verbose = false,
   ) {
     const netFace = this.netface;
     try {
